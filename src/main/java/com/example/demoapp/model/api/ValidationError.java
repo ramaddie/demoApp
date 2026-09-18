@@ -1,4 +1,4 @@
-package com.maddie.ravichandran.demoApp.model.api;
+package com.example.demoapp.model.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

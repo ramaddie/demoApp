@@ -1,4 +1,4 @@
-package com.maddie.ravichandran.demoApp.model.exceptions;
+package com.example.demoapp.model.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;

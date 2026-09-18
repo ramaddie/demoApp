@@ -1,4 +1,4 @@
-package com.maddie.ravichandran.demoApp.config;
+package com.example.demoapp.config;
 
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;

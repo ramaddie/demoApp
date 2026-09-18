@@ -1,6 +1,6 @@
-package com.maddie.ravichandran.demoApp.config;
+package com.example.demoapp.config;
 
-import com.maddie.ravichandran.demoApp.controller.MyController;
+import com.example.demoapp.controller.UserRequestController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,10 +15,10 @@ public class SecurityConfiguration
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
-        http.securityMatcher(MyController.CONTEXT_PATH + "/**")
+        http.securityMatcher(UserRequestController.CONTEXT_PATH + "/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(MyController.CONTEXT_PATH + MyController.VER_1_REQUEST_PATH).permitAll()
-                        .requestMatchers(MyController.CONTEXT_PATH + MyController.VER_2_REQUEST_PATH).permitAll()
+                        .requestMatchers(UserRequestController.CONTEXT_PATH + UserRequestController.VER_1_REQUEST_PATH).permitAll()
+                        .requestMatchers(UserRequestController.CONTEXT_PATH + UserRequestController.VER_2_REQUEST_PATH).permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable());
         return http.build();

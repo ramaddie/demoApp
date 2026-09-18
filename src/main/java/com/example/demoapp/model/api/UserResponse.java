@@ -1,4 +1,4 @@
-package com.maddie.ravichandran.demoApp.model.api;
+package com.example.demoapp.model.api;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class MyResponse
+public class UserResponse
 {
     private String messageId;
     private String userId;

@@ -1,10 +1,10 @@
-package com.maddie.ravichandran.demoApp.controller;
+package com.example.demoapp.controller;
 
-import com.maddie.ravichandran.demoApp.model.api.MyErrorResponse;
-import com.maddie.ravichandran.demoApp.model.api.ValidationError;
-import com.maddie.ravichandran.demoApp.model.exceptions.ConstraintsValidationException;
-import com.maddie.ravichandran.demoApp.model.exceptions.FailureException;
-import com.maddie.ravichandran.demoApp.model.exceptions.MyCustomException;
+import com.example.demoapp.model.api.ErrorResponse;
+import com.example.demoapp.model.api.ValidationError;
+import com.example.demoapp.model.exceptions.ConstraintsValidationException;
+import com.example.demoapp.model.exceptions.FailureException;
+import com.example.demoapp.model.exceptions.RequestProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindingResult;
@@ -22,12 +22,12 @@ import java.util.List;
 public class ExceptionHandlers
 {
 
-    @ExceptionHandler(MyCustomException.class)
+    @ExceptionHandler(RequestProcessingException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    private MyErrorResponse handleMyCustomException(MyCustomException e)
+    private ErrorResponse handleRequestProcessingException(RequestProcessingException e)
     {
-        return MyErrorResponse.builder()
+        return ErrorResponse.builder()
                 .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.value() + "")
                 .errorDescription(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .errorMessage("An error occurred while processing the request")
@@ -38,7 +38,7 @@ public class ExceptionHandlers
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public MyErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
 
         List<ValidationError> errors = new ArrayList<>();
@@ -51,7 +51,7 @@ public class ExceptionHandlers
                     .build());
         }
 
-        return MyErrorResponse.builder()
+        return ErrorResponse.builder()
                 .errorCode(HttpStatus.BAD_REQUEST.value() + "")
                 .errorDescription(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .errorMessage("Fix all errors in request before retrying")
@@ -62,7 +62,7 @@ public class ExceptionHandlers
     @ExceptionHandler(ConstraintsValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public MyErrorResponse handleConstraintsValidationException(ConstraintsValidationException e) {
+    public ErrorResponse handleConstraintsValidationException(ConstraintsValidationException e) {
 
         List<ValidationError> errors = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class ExceptionHandlers
                     .build());
         }
 
-        return MyErrorResponse.builder()
+        return ErrorResponse.builder()
                 .errorCode(HttpStatus.BAD_REQUEST.value() + "")
                 .errorDescription(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .errorMessage("Fix all errors in request before retrying")
@@ -85,9 +85,9 @@ public class ExceptionHandlers
     @ExceptionHandler(HttpMessageConversionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public MyErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e)
+    public ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e)
     {
-        return MyErrorResponse.builder()
+        return ErrorResponse.builder()
                 .errorCode(HttpStatus.BAD_REQUEST.value() + "")
                 .errorDescription(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .errorMessage("Unable to read message request")
@@ -98,9 +98,9 @@ public class ExceptionHandlers
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    private MyErrorResponse handleGenericException(Exception e)
+    private ErrorResponse handleGenericException(Exception e)
     {
-        return MyErrorResponse.builder()
+        return ErrorResponse.builder()
                 .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.value() + "")
                 .errorDescription(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .errorMessage("Unexpected exception was thrown")

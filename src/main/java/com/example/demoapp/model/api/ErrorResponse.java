@@ -1,4 +1,4 @@
-package com.maddie.ravichandran.demoApp.model.api;
+package com.example.demoapp.model.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-public class MyErrorResponse
+public class ErrorResponse
 {
     private String errorCode;
     private String errorDescription;
