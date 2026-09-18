@@ -1,8 +1,5 @@
 package com.maddie.ravichandran.demoApp.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.maddie.ravichandran.demoApp.model.api.MyRequest;
 import com.maddie.ravichandran.demoApp.model.api.MyResponse;
 import com.maddie.ravichandran.demoApp.model.api.User;
@@ -12,12 +9,14 @@ import com.maddie.ravichandran.demoApp.model.exceptions.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.Valid;
-import javax.validation.Validation;
-import java.io.IOException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Path;
+import jakarta.validation.Valid;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,6 +26,8 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class RequestHandler
 {
+    private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -37,9 +38,14 @@ public class RequestHandler
 
     public void prettyPrint(Object obj)
     {
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        String prettyJson = gson.toJson(obj);
-        log.info(prettyJson);
+        try
+        {
+            log.info(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj));
+        }
+        catch (JacksonException ex)
+        {
+            log.warn("Unable to pretty print object of type {}", obj.getClass(), ex);
+        }
     }
 
     public MyResponse handleIncomingRequestString(String request)
@@ -71,7 +77,7 @@ public class RequestHandler
             checkAndThrowValidationErrors(request);
             return generateResponse(request);
         }
-        catch (IOException ex)
+        catch (JacksonException ex)
         {
             throw new MyCustomException("Error deserializing incoming string request!");
         }
@@ -79,7 +85,7 @@ public class RequestHandler
 
     private void checkAndThrowValidationErrors(MyRequest request)
     {
-        Set<ConstraintViolation<MyRequest>> fieldErrors = Validation.buildDefaultValidatorFactory().getValidator().validate(request);
+        Set<ConstraintViolation<MyRequest>> fieldErrors = VALIDATOR.validate(request);
         if (!fieldErrors.isEmpty())
         {
             ConstraintsValidationException exception = new ConstraintsValidationException();

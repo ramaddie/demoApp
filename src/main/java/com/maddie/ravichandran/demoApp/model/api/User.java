@@ -2,8 +2,8 @@ package com.maddie.ravichandran.demoApp.model.api;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Data
 @AllArgsConstructor
