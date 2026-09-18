@@ -1,16 +1,17 @@
 package com.maddie.ravichandran.demoApp.config;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.StreamReadFeature;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.module.SimpleModule;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,28 +19,28 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class JacksonConfig
 {
-    @Bean
-    @Primary
-    public JavaTimeModule javaTimeModule()
-    {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(ZonedDateTime.class,
-                new ZonedDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")));
-        return javaTimeModule;
-    }
+    private static final DateTimeFormatter ZONED_DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     @Bean
-    @Primary
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder, JavaTimeModule javaTimeModule, SimpleModule uriIdModule)
+    public JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer()
     {
-        ObjectMapper objectMapper = builder.modules(javaTimeModule, uriIdModule)
-                .indentOutput(true)
-                .createXmlMapper(false)
-                .build()
-                .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-                .configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false)
-                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,true)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,true);
-        return objectMapper;
+        SimpleModule zonedDateTimeModule = new SimpleModule();
+        zonedDateTimeModule.addSerializer(ZonedDateTime.class, new ValueSerializer<>()
+        {
+            @Override
+            public void serialize(ZonedDateTime value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException
+            {
+                gen.writeString(ZONED_DATE_TIME_FORMATTER.format(value));
+            }
+        });
+
+        return builder -> builder
+                .addModule(zonedDateTimeModule)
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
+                .disable(DateTimeFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS)
+                .enable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+                .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 }
