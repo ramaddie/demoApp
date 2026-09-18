@@ -34,14 +34,14 @@ Basic REST interface that can handle JSON, XML or x-www-form-urlencoded requests
 
     `curl --location --request POST 'http://localhost:8080/demoAPI/v1/request' \
     --header 'Content-Type: application/xml' \
-    --data-raw '<myRequest>
+    --data-raw '<userRequest>
       <messageId>12345</messageId>
         <user>
-          <firstName>Maddie</firstName>
-          <lastName>Ravichandran</lastName>
+          <firstName>Jane</firstName>
+          <lastName>Doe</lastName>
           <userId>01</userId>
       </user>
-    </myRequest>'`
+    </userRequest>'`
 
 ### Request JSON
 
@@ -52,8 +52,8 @@ Basic REST interface that can handle JSON, XML or x-www-form-urlencoded requests
     --data-raw '{
       "messageId" : "12345",
       "user" : {
-        "firstName" : "Maddie",
-        "lastName" : "Ravichandran",
+        "firstName" : "Jane",
+        "lastName" : "Doe",
         "userId" : "01"
       }
     }'`
@@ -65,11 +65,11 @@ Basic REST interface that can handle JSON, XML or x-www-form-urlencoded requests
     `curl --location --request POST 'http://localhost:8080/demoAPI/v1/request' \
       --header 'Content-Type: application/x-www-form-urlencoded' \
       --data-urlencode 'messageId=12345' \
-      --data-urlencode 'firstName=Maddie' \
-      --data-urlencode 'lastName=Ravichandran' \
+      --data-urlencode 'firstName=Jane' \
+      --data-urlencode 'lastName=Doe' \
       --data-urlencode 'userId=01'`
 
-### Request String custom deserializer parses string and converts to MyRequest Object
+### Request String custom deserializer parses string and converts to UserRequest Object
 
 `POST http://localhost:8080/demoAPI/v2/request`
 
@@ -78,8 +78,8 @@ Basic REST interface that can handle JSON, XML or x-www-form-urlencoded requests
     --data-raw '{
       "messageId" : "12345",
       "user" : {
-        "firstName" : "Maddie",
-        "lastName" : "Ravichandran",
+        "firstName" : "Jane",
+        "lastName" : "Doe",
         "userId" : "01"
       }
     }'`

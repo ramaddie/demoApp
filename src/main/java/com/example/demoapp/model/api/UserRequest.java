@@ -1,4 +1,4 @@
-package com.maddie.ravichandran.demoApp.model.api;
+package com.example.demoapp.model.api;
 
 import lombok.*;
 
@@ -12,7 +12,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @XmlRootElement
-public class MyRequest
+public class UserRequest
 {
     @NotBlank(message = "messageId is a required field and cannot be blank")
     private String messageId;

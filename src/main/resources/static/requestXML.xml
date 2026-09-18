@@ -1,8 +1,8 @@
-<myRequest>
+<userRequest>
     <messageId>12345</messageId>
     <user>
-        <firstName>Maddie</firstName>
-        <lastName>Ravichandran</lastName>
+        <firstName>Jane</firstName>
+        <lastName>Doe</lastName>
         <userId>01</userId>
     </user>
-</myRequest>
+</userRequest>

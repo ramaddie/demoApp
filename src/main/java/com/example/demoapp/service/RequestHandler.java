@@ -1,11 +1,11 @@
-package com.maddie.ravichandran.demoApp.service;
+package com.example.demoapp.service;
 
-import com.maddie.ravichandran.demoApp.model.api.MyRequest;
-import com.maddie.ravichandran.demoApp.model.api.MyResponse;
-import com.maddie.ravichandran.demoApp.model.api.User;
-import com.maddie.ravichandran.demoApp.model.exceptions.ConstraintsValidationException;
-import com.maddie.ravichandran.demoApp.model.exceptions.MyCustomException;
-import com.maddie.ravichandran.demoApp.model.exceptions.ValidationException;
+import com.example.demoapp.model.api.UserRequest;
+import com.example.demoapp.model.api.UserResponse;
+import com.example.demoapp.model.api.User;
+import com.example.demoapp.model.exceptions.ConstraintsValidationException;
+import com.example.demoapp.model.exceptions.RequestProcessingException;
+import com.example.demoapp.model.exceptions.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,16 +48,16 @@ public class RequestHandler
         }
     }
 
-    public MyResponse handleIncomingRequestString(String request)
-            throws MyCustomException
+    public UserResponse handleIncomingRequestString(String request)
+            throws RequestProcessingException
     {
-        return getMyRequest(request);
+        return parseUserRequest(request);
     }
 
-    public MyResponse handleIncomingRequestFormUrlEncoded(String messageId, String firstName, String lastName, String userId)
-            throws MyCustomException
+    public UserResponse handleIncomingRequestFormUrlEncoded(String messageId, String firstName, String lastName, String userId)
+            throws RequestProcessingException
     {
-        MyRequest request = MyRequest.builder()
+        UserRequest request = UserRequest.builder()
                 .messageId(messageId)
                 .user(User.builder()
                         .firstName(firstName)
@@ -69,23 +69,23 @@ public class RequestHandler
         return generateResponse(request);
     }
 
-    private MyResponse getMyRequest(String jsonString)
-            throws MyCustomException
+    private UserResponse parseUserRequest(String jsonString)
+            throws RequestProcessingException
     {
         try {
-            MyRequest request = objectMapper.readValue(jsonString, MyRequest.class);
+            UserRequest request = objectMapper.readValue(jsonString, UserRequest.class);
             checkAndThrowValidationErrors(request);
             return generateResponse(request);
         }
         catch (JacksonException ex)
         {
-            throw new MyCustomException("Error deserializing incoming string request!");
+            throw new RequestProcessingException("Error deserializing incoming string request!");
         }
     }
 
-    private void checkAndThrowValidationErrors(MyRequest request)
+    private void checkAndThrowValidationErrors(UserRequest request)
     {
-        Set<ConstraintViolation<MyRequest>> fieldErrors = VALIDATOR.validate(request);
+        Set<ConstraintViolation<UserRequest>> fieldErrors = VALIDATOR.validate(request);
         if (!fieldErrors.isEmpty())
         {
             ConstraintsValidationException exception = new ConstraintsValidationException();
@@ -107,12 +107,12 @@ public class RequestHandler
                 .collect(Collectors.joining("."));
     }
 
-    public MyResponse generateResponse(@Valid MyRequest request)
-            throws MyCustomException
+    public UserResponse generateResponse(@Valid UserRequest request)
+            throws RequestProcessingException
     {
         prettyPrint(request);
 
-        return MyResponse.builder()
+        return UserResponse.builder()
                 .messageId(request.getMessageId())
                 .userId(request.getUser().getUserId())
                 .build();

@@ -1,8 +1,8 @@
 {
   "messageId" : "12345",
   "user" : {
-    "firstName" : "Maddie",
-    "lastName" : "Ravichandran",
+    "firstName" : "Jane",
+    "lastName" : "Doe",
     "userId" : "01"
   }
 }
